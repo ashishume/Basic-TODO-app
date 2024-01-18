@@ -2,12 +2,14 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Axios } from '../../services/http-service';
 import { API_PATHS } from '../../constants/api-path';
 import { IInitialState, ITask } from '../../models/task';
+import { TASK_STATUS } from '../../constants/tasks';
 
 const productInitial = {
   _id: '',
   title: '',
   taskStatus: '',
   description: '',
+  createdAt: '',
 };
 
 const initialState: IInitialState = {
@@ -19,6 +21,23 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
   const response = await Axios.get(API_PATHS.TASK, { withCredentials: true });
   return response.data;
 });
+export const createTasks = createAsyncThunk(
+  'tasks/createTasks',
+  async (payload: ITask) => {
+    const response = await Axios.post(API_PATHS.TASK, payload);
+    return response.data;
+  }
+);
+export const updateTasks = createAsyncThunk(
+  'tasks/updateTasks',
+  async (payload: { id: string; taskStatus: string }) => {
+    const response = await Axios.patch(
+      API_PATHS.TASK + '/' + payload.id,
+      payload
+    );
+    return response.data;
+  }
+);
 
 export const searchTasks = createAsyncThunk(
   'task/searchTasks',
@@ -35,6 +54,15 @@ export const tasksSlice = createSlice({
   initialState,
   reducers: {
     clearState: (state) => initialState,
+    updateCheckedStatus: (state, action: PayloadAction<any>) => {
+      console.log(state, action);
+      state.tasks = state.tasks.map((task) => {
+        if (task._id === action.payload.id) {
+          task.taskStatus = action.payload.taskStatus;
+        }
+        return task;
+      });
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -80,6 +108,6 @@ export const tasksSlice = createSlice({
   },
 });
 
-export const { clearState } = tasksSlice.actions;
+export const { clearState, updateCheckedStatus } = tasksSlice.actions;
 export const selectProducts = (state: IInitialState) => state.tasks;
 export default tasksSlice.reducer;

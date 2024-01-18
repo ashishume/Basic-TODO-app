@@ -12,7 +12,7 @@ router.post("/todo", async (req, res) => {
       taskStatus,
     });
     await newTask.save();
-    res.status(201).json({ tasks, message: "created" });
+    res.status(201).json({ newTask, message: "created" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
