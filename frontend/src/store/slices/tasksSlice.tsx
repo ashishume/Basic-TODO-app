@@ -18,13 +18,25 @@ const initialState: IInitialState = {
 };
 
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
-  const response = await Axios.get(API_PATHS.TASK, { withCredentials: true });
+  let userId = '';
+  const userIdData = localStorage.getItem('userId');
+  if (userIdData) {
+    userId = userIdData;
+  }
+  const response = await Axios.get(API_PATHS.TASK + '/' + userId, {
+    withCredentials: true,
+  });
   return response.data;
 });
 export const createTasks = createAsyncThunk(
   'tasks/createTasks',
   async (payload: ITask) => {
-    const response = await Axios.post(API_PATHS.TASK, payload);
+    let userId = '';
+    const userIdData = localStorage.getItem('userId');
+    if (userIdData) {
+      userId = userIdData;
+    }
+    const response = await Axios.post(API_PATHS.TASK + '/' + userId, payload);
     return response.data;
   }
 );
@@ -39,16 +51,16 @@ export const updateTasks = createAsyncThunk(
   }
 );
 
-export const searchTasks = createAsyncThunk(
-  'task/searchTasks',
-  async (searchValue: string) => {
-    const response = await Axios.get(
-      API_PATHS.SEARCH + '?searchValue=' + searchValue,
-      { withCredentials: true }
-    );
-    return response.data;
-  }
-);
+// export const searchTasks = createAsyncThunk(
+//   'task/searchTasks',
+//   async (searchValue: string) => {
+//     const response = await Axios.get(
+//       API_PATHS.SEARCH + '?searchValue=' + searchValue,
+//       { withCredentials: true }
+//     );
+//     return response.data;
+//   }
+// );
 export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
@@ -85,26 +97,26 @@ export const tasksSlice = createSlice({
         state.isLoading = false;
       }
     );
-    builder.addCase(
-      searchTasks.pending,
-      (state: IInitialState, action: PayloadAction<any>) => {
-        state.isLoading = true;
-      }
-    );
-    builder.addCase(
-      searchTasks.fulfilled,
-      (state: IInitialState, action: PayloadAction<any>) => {
-        state.tasks = action.payload;
-        state.isLoading = false;
-      }
-    );
-    builder.addCase(
-      searchTasks.rejected,
-      (state: IInitialState, action: PayloadAction<any>) => {
-        state.tasks = [];
-        state.isLoading = false;
-      }
-    );
+    // builder.addCase(
+    //   searchTasks.pending,
+    //   (state: IInitialState, action: PayloadAction<any>) => {
+    //     state.isLoading = true;
+    //   }
+    // );
+    // builder.addCase(
+    //   searchTasks.fulfilled,
+    //   (state: IInitialState, action: PayloadAction<any>) => {
+    //     state.tasks = action.payload;
+    //     state.isLoading = false;
+    //   }
+    // );
+    // builder.addCase(
+    //   searchTasks.rejected,
+    //   (state: IInitialState, action: PayloadAction<any>) => {
+    //     state.tasks = [];
+    //     state.isLoading = false;
+    //   }
+    // );
   },
 });
 

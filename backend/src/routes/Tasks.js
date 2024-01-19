@@ -3,13 +3,15 @@ const router = express.Router();
 const Tasks = require("../models/Tasks");
 const authenticateToken = require("../controllers/authMiddleware");
 
-router.post("/todo", async (req, res) => {
+router.post("/todo/:userId", async (req, res) => {
   try {
     const { title, description, taskStatus } = req.body;
+    const { userId } = req.params;
     const newTask = new Tasks({
       title,
       description,
       taskStatus,
+      user: userId,
     });
     await newTask.save();
     res.status(201).json({ newTask, message: "created" });
@@ -45,9 +47,12 @@ router.delete("/todo/:id", async (req, res) => {
   }
 });
 
-router.get("/todo", async (req, res) => {
+router.get("/todo/:userId", async (req, res) => {
   try {
-    const tasks = await Tasks.find().select("-__v");
+    const { userId } = req.params;
+    const tasks = await Tasks.find({
+      user: userId,
+    }).select("-__v");
     res.status(200).json(tasks);
   } catch (error) {
     res.status(500).json({ message: error.message });

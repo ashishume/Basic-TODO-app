@@ -11,10 +11,12 @@ import {
   fetchTasks,
   updateTasks,
   updateCheckedStatus,
+  createTasks,
 } from '../../store/slices/tasksSlice';
 import SpinningLoader from '../SpinningLoader';
 import { TASK_STATUS } from '../../constants/tasks';
 import AddTaskModal from '../Modal';
+import { ITask } from '../../models/task';
 const InputField = () => {
   const dispatch = useAppDispatch();
   const { tasks, isLoading } = useAppSelector((state) => state.tasksSlice);
@@ -47,9 +49,18 @@ const InputField = () => {
       );
     }
   };
+
+  const onSubmitTask = async (formData: ITask) => {
+    await setOpen(false);
+    await dispatch(createTasks({ ...formData, taskStatus: TASK_STATUS.TODO }));
+    await dispatch(fetchTasks());
+  };
+
   return (
     <>
-      {isOpen ? <AddTaskModal setOpen={setOpen} /> : null}
+      {isOpen ? (
+        <AddTaskModal onSubmitTask={onSubmitTask} setOpen={setOpen} />
+      ) : null}
       <div className="form-container">
         <div className="todo-task-container">
           <button onClick={openModal} className="add-task-btn">
