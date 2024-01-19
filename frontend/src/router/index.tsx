@@ -9,7 +9,6 @@ import Login from '../components/Auth/login';
 import App from '../App';
 import Signup from '../components/Auth/signup';
 import PrivateRoute from './private-route';
-import Search from '../pages/Search';
 import Layout from '../components/layout';
 import { useEffect, useState } from 'react';
 import { Axios } from '../services/http-service';
@@ -43,15 +42,6 @@ const RoutePaths = () => {
           element={
             <PrivateRoute isLoggedIn={isLoggedIn}>
               <App />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/search"
-          element={
-            <PrivateRoute isLoggedIn={isLoggedIn}>
-              <Search />
             </PrivateRoute>
           }
         />

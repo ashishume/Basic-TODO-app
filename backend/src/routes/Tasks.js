@@ -58,5 +58,18 @@ router.get("/todo/:userId", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.get("/todo/filter/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { filter } = req.query;
+    const tasks = await Tasks.find({
+      user: userId,
+      taskStatus: filter,
+    }).select("-__v");
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;

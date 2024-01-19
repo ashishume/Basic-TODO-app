@@ -50,24 +50,28 @@ export const updateTasks = createAsyncThunk(
     return response.data;
   }
 );
+export const filterData = createAsyncThunk(
+  'tasks/filterTasks',
+  async (payload: string) => {
+    let userId = '';
+    const userIdData = localStorage.getItem('userId');
+    if (userIdData) {
+      userId = userIdData;
+    }
+    const response = await Axios.get(
+      `${API_PATHS.FILTER_TASK}/${userId}?filter=${payload}`
+    );
+    return response.data;
+  }
+);
 
-// export const searchTasks = createAsyncThunk(
-//   'task/searchTasks',
-//   async (searchValue: string) => {
-//     const response = await Axios.get(
-//       API_PATHS.SEARCH + '?searchValue=' + searchValue,
-//       { withCredentials: true }
-//     );
-//     return response.data;
-//   }
-// );
+
 export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
     clearState: (state) => initialState,
     updateCheckedStatus: (state, action: PayloadAction<any>) => {
-      console.log(state, action);
       state.tasks = state.tasks.map((task) => {
         if (task._id === action.payload.id) {
           task.taskStatus = action.payload.taskStatus;
@@ -97,26 +101,26 @@ export const tasksSlice = createSlice({
         state.isLoading = false;
       }
     );
-    // builder.addCase(
-    //   searchTasks.pending,
-    //   (state: IInitialState, action: PayloadAction<any>) => {
-    //     state.isLoading = true;
-    //   }
-    // );
-    // builder.addCase(
-    //   searchTasks.fulfilled,
-    //   (state: IInitialState, action: PayloadAction<any>) => {
-    //     state.tasks = action.payload;
-    //     state.isLoading = false;
-    //   }
-    // );
-    // builder.addCase(
-    //   searchTasks.rejected,
-    //   (state: IInitialState, action: PayloadAction<any>) => {
-    //     state.tasks = [];
-    //     state.isLoading = false;
-    //   }
-    // );
+    builder.addCase(
+      filterData.pending,
+      (state: IInitialState, action: PayloadAction<any>) => {
+        state.isLoading = true;
+      }
+    );
+    builder.addCase(
+      filterData.fulfilled,
+      (state: IInitialState, action: PayloadAction<any>) => {
+        state.tasks = action.payload;
+        state.isLoading = false;
+      }
+    );
+    builder.addCase(
+      filterData.rejected,
+      (state: IInitialState, action: PayloadAction<any>) => {
+        state.tasks = [];
+        state.isLoading = false;
+      }
+    );
   },
 });
 

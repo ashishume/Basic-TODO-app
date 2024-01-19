@@ -4,4 +4,5 @@ export const API_PATHS = {
   SIGNUP: '/signup',
   TASK: '/todo',
   SEARCH: '/search',
+  FILTER_TASK: '/todo/filter',
 };

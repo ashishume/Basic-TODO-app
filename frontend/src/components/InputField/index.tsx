@@ -12,6 +12,7 @@ import {
   updateTasks,
   updateCheckedStatus,
   createTasks,
+  filterData,
 } from '../../store/slices/tasksSlice';
 import SpinningLoader from '../SpinningLoader';
 import { TASK_STATUS } from '../../constants/tasks';
@@ -21,6 +22,13 @@ const InputField = () => {
   const dispatch = useAppDispatch();
   const { tasks, isLoading } = useAppSelector((state) => state.tasksSlice);
   const [isOpen, setOpen] = useState(false);
+  const [isFilterActive, setFilter] = useState(false);
+
+  const options = [
+    { key: 1, label: TASK_STATUS.TODO },
+    { key: 2, label: TASK_STATUS.INPROGRESS },
+    { key: 3, label: TASK_STATUS.DONE },
+  ];
   useEffect(() => {
     dispatch(fetchTasks());
   }, []);
@@ -56,6 +64,19 @@ const InputField = () => {
     await dispatch(fetchTasks());
   };
 
+  const handleFilter = (e: ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+
+    if (val) {
+      setFilter(true);
+      dispatch(filterData(val));
+    }
+  };
+
+  const removeFilter = async () => {
+    await dispatch(fetchTasks());
+    await setFilter(false);
+  };
   return (
     <>
       {isOpen ? (
@@ -66,10 +87,15 @@ const InputField = () => {
           <button onClick={openModal} className="add-task-btn">
             Add Task
           </button>
-          <select className="select-filter">
-            <option>To Do</option>
-            <option>In Progress</option>
-            <option>Done</option>
+          {isFilterActive && (
+            <div className="remove-filter-btn" onClick={removeFilter}>
+              Remove filter
+            </div>
+          )}
+          <select className="select-filter" onChange={handleFilter}>
+            {options.map(({ label, key }) => {
+              return <option key={key}>{label}</option>;
+            })}
           </select>
         </div>
         <div className="list-data-container">
