@@ -11,6 +11,7 @@
   animation: fadeIn 0.2s ease-out;
   cursor: pointer;
   .modal-container {
+    overflow: hidden;
     animation: fadeIn 0.2s ease-out;
     .heading {
       margin-left: 25px;
@@ -23,7 +24,7 @@
     transform: translate(-50%, -50%);
     background-color: #fff;
     border-radius: 4px;
-    height: 35vh;
+    height: 40vh;
 
     padding: 5px;
     .form-container {
