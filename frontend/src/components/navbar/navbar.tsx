@@ -5,13 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Axios } from '../../services/http-service';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../../store/hooks';
-const Navbar = ({
-  searchValue = '',
-  isFocused = false,
-}: {
-  searchValue: string;
-  isFocused: boolean;
-}) => {
+const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuVisible, showMenu] = useState(false);
   async function logOutUser() {

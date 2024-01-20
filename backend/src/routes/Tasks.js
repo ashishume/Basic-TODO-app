@@ -3,7 +3,8 @@ const router = express.Router();
 const Tasks = require("../models/Tasks");
 const authenticateToken = require("../controllers/authMiddleware");
 
-router.post("/todo/:userId", async (req, res) => {
+/** add new task */
+router.post("/todo/:userId", authenticateToken, async (req, res) => {
   try {
     const { title, description, taskStatus } = req.body;
     const { userId } = req.params;
@@ -20,7 +21,8 @@ router.post("/todo/:userId", async (req, res) => {
   }
 });
 
-router.patch("/todo/:id", async (req, res) => {
+/** update existing task */
+router.patch("/todo/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { taskStatus } = req.body;
@@ -35,7 +37,8 @@ router.patch("/todo/:id", async (req, res) => {
   }
 });
 
-router.delete("/todo/:id", async (req, res) => {
+/** delete existing task */
+router.delete("/todo/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     await Tasks.findByIdAndDelete(id);
@@ -47,7 +50,8 @@ router.delete("/todo/:id", async (req, res) => {
   }
 });
 
-router.get("/todo/:userId", async (req, res) => {
+/** fetch user todos */
+router.get("/todo/:userId", authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
     const tasks = await Tasks.find({
@@ -58,7 +62,9 @@ router.get("/todo/:userId", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-router.get("/todo/filter/:userId", async (req, res) => {
+
+/** filter todos */
+router.get("/todo/filter/:userId", authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
     const { filter } = req.query;

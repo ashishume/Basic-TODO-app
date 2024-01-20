@@ -3,7 +3,7 @@ import Navbar from '../navbar/navbar';
 const Layout = ({ children, searchValue = '', isFocused = false }: any) => {
   return (
     <div className="mx-auto">
-      <Navbar searchValue={searchValue} isFocused={isFocused} />
+      <Navbar/>
       {children}
     </div>
   );
