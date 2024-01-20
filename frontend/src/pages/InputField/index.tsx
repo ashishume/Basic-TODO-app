@@ -14,11 +14,11 @@ import {
   createTasks,
   filterData,
 } from '../../store/slices/tasksSlice';
-import SpinningLoader from '../SpinningLoader';
+import SpinningLoader from '../../components/SpinningLoader';
 import { TASK_STATUS, options } from '../../constants/tasks';
-import AddTaskModal from '../Modal';
+import AddTaskModal from '../../components/Modal';
 import { ITask } from '../../models/task';
-import InputForm from '../TaskItem';
+import InputForm from '../../components/TaskItem';
 const InputField = () => {
   const dispatch = useAppDispatch();
   const { tasks, isLoading } = useAppSelector((state) => state.tasksSlice);
