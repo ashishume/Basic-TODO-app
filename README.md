@@ -10,6 +10,8 @@ This project is todo list app
 
 - User Authentication:
   - Sign up and sign in using JSON Web Tokens (JWT) for secure authentication.
+- Todo Tasks:
+  - Add tasks and mark them done when completed
 
 ## Getting Started
 
