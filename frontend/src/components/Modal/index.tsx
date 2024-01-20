@@ -8,16 +8,19 @@ import React, {
   useState,
 } from 'react';
 import './style.scss';
+import { ITask } from '../../models/task';
 const AddTaskModal = ({
   setOpen,
   onSubmitTask,
+  data,
 }: {
   setOpen: Dispatch<SetStateAction<boolean>>;
   onSubmitTask: (e: any) => void;
+  data: ITask | null;
 }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
+    title: data?.title || '',
+    description: data?.description || '',
   });
   const [errors, setErrors] = useState({
     title: '',

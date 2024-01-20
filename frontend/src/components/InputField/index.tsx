@@ -15,32 +15,33 @@ import {
   filterData,
 } from '../../store/slices/tasksSlice';
 import SpinningLoader from '../SpinningLoader';
-import { TASK_STATUS } from '../../constants/tasks';
+import { TASK_STATUS, options } from '../../constants/tasks';
 import AddTaskModal from '../Modal';
 import { ITask } from '../../models/task';
+import InputForm from '../TaskItem';
 const InputField = () => {
   const dispatch = useAppDispatch();
   const { tasks, isLoading } = useAppSelector((state) => state.tasksSlice);
   const [isOpen, setOpen] = useState(false);
   const [isFilterActive, setFilter] = useState(false);
+  const [data, setData] = useState<ITask | null>(null);
 
-  const options = [
-    { key: 1, label: TASK_STATUS.TODO },
-    { key: 2, label: TASK_STATUS.INPROGRESS },
-    { key: 3, label: TASK_STATUS.DONE },
-  ];
   useEffect(() => {
     dispatch(fetchTasks());
   }, []);
 
   const openModal = () => {
+    /** clear the previous data if any */
+    setData(null);
     setOpen(true);
   };
 
+  /** mark any task completed if any */
   const handleCheckboxEvent = async (
     e: ChangeEvent<HTMLInputElement>,
     id: string | null
   ) => {
+    e.stopPropagation();
     const isChecked = e.target.checked;
     if (id) {
       await dispatch(
@@ -58,12 +59,26 @@ const InputField = () => {
     }
   };
 
+  /** view more details on each task */
+  const expandTask = (task: ITask) => {
+    setOpen(true);
+    setData(task);
+  };
+
+  /**
+   * submit the task when form is filled
+   * @param formData
+   */
   const onSubmitTask = async (formData: ITask) => {
     await setOpen(false);
     await dispatch(createTasks({ ...formData, taskStatus: TASK_STATUS.TODO }));
     await dispatch(fetchTasks());
   };
 
+  /**
+   * filter data based on dropdown menu
+   * @param e
+   */
   const handleFilter = (e: ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
 
@@ -73,14 +88,22 @@ const InputField = () => {
     }
   };
 
+  /**
+   * clear the filter when all tasks need to be visible
+   */
   const removeFilter = async () => {
     await dispatch(fetchTasks());
     await setFilter(false);
   };
+
   return (
     <>
       {isOpen ? (
-        <AddTaskModal onSubmitTask={onSubmitTask} setOpen={setOpen} />
+        <AddTaskModal
+          data={data}
+          onSubmitTask={onSubmitTask}
+          setOpen={setOpen}
+        />
       ) : null}
       <div className="form-container">
         <div className="todo-task-container">
@@ -103,30 +126,22 @@ const InputField = () => {
             tasks.map(({ _id, title, description, taskStatus, createdAt }) => {
               return (
                 <div className="list-content" key={_id}>
-                  <div className="list-content__checkbox-container">
-                    <input
-                      type="checkbox"
-                      className="custom-checkbox"
-                      checked={taskStatus === TASK_STATUS.DONE}
-                      onChange={(e) => handleCheckboxEvent(e, _id)}
-                    />
-                  </div>
-                  <div className="list-content__title-container">
-                    <div
-                      className={`list-content__title-container--title ${
-                        taskStatus === TASK_STATUS.DONE ? 'text-strike' : null
-                      }`}
-                    >
-                      {title}
-                    </div>
-                    <div
-                      className={`list-content__title-container--date  ${
-                        taskStatus === TASK_STATUS.DONE ? 'gray-text' : null
-                      }`}
-                    >
-                      {new Date(createdAt).toDateString()}
-                    </div>
-                  </div>
+                  <InputForm
+                    taskStatus={taskStatus}
+                    handleCheckboxEvent={handleCheckboxEvent}
+                    _id={_id}
+                    title={title}
+                    createdAt={createdAt}
+                    expandTask={() =>
+                      expandTask({
+                        _id,
+                        title,
+                        description,
+                        taskStatus,
+                        createdAt,
+                      })
+                    }
+                  />
                 </div>
               );
             })

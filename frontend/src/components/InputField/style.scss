@@ -9,7 +9,7 @@
     display: flex;
     justify-content: space-between;
     margin: 10px auto;
-  
+
     .select-filter {
       padding: 5px 10px;
       border: none;
@@ -21,15 +21,15 @@
       background-color: #fff;
       color: #000;
     }
-    .remove-filter-btn{
+    .remove-filter-btn {
       color: rgba(14, 135, 248, 0.575);
       align-self: center;
       cursor: pointer;
     }
-   
   }
   .list-data-container {
     .list-content {
+      cursor: pointer;
       background-color: #fff;
       box-shadow: 2px 1px 4px 1px lightgray;
       height: 60px;
@@ -44,6 +44,10 @@
       justify-content: flex-start;
       align-items: center;
       display: flex;
+
+      &:hover {
+        background-color: rgba(193, 193, 255, 0.185);
+      }
 
       &__title-container {
         margin-left: 12px;
@@ -72,6 +76,11 @@
       .custom-checkbox {
         height: 25px;
         width: 25px;
+      }
+      .view-more-icon {
+        width: 100%;
+        display: flex;
+        justify-content: right;
       }
     }
   }
